@@ -1,61 +1,38 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
+require('dotenv').config();
+const { setupDb } = require('./setup/mongoose');
+const Items = require('./api/items');
+const Movies = require('./api/movies');
+const Middleware = require('./middleware');
 
 const app = express();
 
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
- res.status(200).send("Hello world");
-});
+const setup = async () => {
 
-app.get("/json", (req, res) => {
- res.status(200).send({ value: 'second api' });
-});
+  await setupDb(process.env.MONGO_DB_URI);
 
-const data = [
- { id: 0, name: 'name - 0' },
- { id: 1, name: 'name - 1' },
- { id: 2, name: 'name - 2' },
- { id: 3, name: 'name - 3' },
-];
+  app.use((req, res, next) => {
+    console.log(1);
+    next();
+  });
 
-app.get("/items/:id", (req, res) => {
- const { id } = req.params;
- console.log('id:', id);
- const elem = data.find(e => e.id == id);
- if (!elem) {
-  return res.status(400).send({ message: "Element was not found" });
- }
- res.status(200).send(elem);
-});
+  app.use(Middleware.authorization);
+  
+  app.use((req, res, next) => {
+    console.log(2);
+    next();
+  });
 
-app.get("/items", (req, res) => {
- let { ids } = req.query;
- ids = ids.split(',').map(id => parseInt(id, 10));
+  app.use(Items.router);
+  app.use(Movies.router);
 
- const elems = data.filter(e => ids.includes(e.id));
- res.send({ data: elems });
-});
+  app.listen(process.env.PORT, () => {
+    console.log("server started");
+  });
+};
 
-app.post("/item", (req, res) => {
- console.log(req.body);
- const { id, name } = req.body;
-
- const elem = data.find(e => e.id == id);
- if (elem) {
-  return res.status(400)
-   .send({ message: `Element with id:${id} already exists` });
- }
-
- const item = { id, name };
- data.push(item);
-
- res.status(201).send(item);
-});
-
-app.listen(8080, () => {
- console.log("server started");
-});
+setup();
