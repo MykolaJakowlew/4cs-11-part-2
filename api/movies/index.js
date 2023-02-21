@@ -105,6 +105,13 @@ router.patch("/movies/:_id",
   return res.status(200).send(doc);
  });
 
+
+// GET /movies?a=67&b=78... 
+router.get("/movies/:_id", (req, res) => {
+ const { a, b } = req.query;
+ const { _id } = req.params;
+});
+
 router.patch("/movies/:_id/directors",
  Middleware.checkIfExists,
  async (req, res, next) => {
