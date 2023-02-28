@@ -2,9 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const { setupDb } = require('./setup/mongoose');
-const Items = require('./api/items');
-const Movies = require('./api/movies');
-const Middleware = require('./middleware');
 
 const app = express();
 
@@ -15,23 +12,10 @@ const setup = async () => {
 
   await setupDb(process.env.MONGO_DB_URI);
 
-  app.use((req, res, next) => {
-    console.log(1);
-    next();
-  });
-
-  app.use(Middleware.authorization);
-  
-  app.use((req, res, next) => {
-    console.log(2);
-    next();
-  });
-
-  app.use(Items.router);
-  app.use(Movies.router);
+  // app.use(Middleware.authorization);
 
   app.listen(process.env.PORT, () => {
-    console.log("server started");
+    console.log(`server started port: ${process.env.PORT} baseUrl: ${process.env.BASE_URL}`);
   });
 };
 
