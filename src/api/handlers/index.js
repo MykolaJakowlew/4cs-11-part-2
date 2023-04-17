@@ -1,3 +1,5 @@
 module.exports = {
- dishes: require('./dishes')
+ dishes: require('./dishes'),
+ orders: require('./orders'),
+ tables: require('./tables')
 };

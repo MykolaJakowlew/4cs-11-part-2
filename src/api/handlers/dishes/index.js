@@ -1,4 +1,6 @@
 module.exports = {
  ...require('./create'),
- ...require('./update')
+ ...require('./update'),
+ ...require('./get'),
+ ...require('./delete')
 };

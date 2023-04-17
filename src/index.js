@@ -4,10 +4,10 @@ require('dotenv').config();
 const cors = require('cors');
 
 process.addListener('uncaughtException', (err) => {
- console.error(`[uncaughtException] err:${err.toString()}`);
+ console.error(`[uncaughtException] err:${err.toString()}`, err);
 });
 process.addListener('unhandledRejection', (err) => {
- console.error(`[unhandledRejection] err:${err.toString()}`);
+ console.error(`[unhandledRejection] err:${err.toString()}`, err);
 });
 
 const setupMongoDB = require('./setup/mongoose');
